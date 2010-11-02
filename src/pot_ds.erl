@@ -66,7 +66,7 @@ test(1) ->
     Pot = new(6,1000,5),
     {R1,P2} = rebuy(Pot),
     {R2,P3} = rebuy(P2),
-    P4 = set_min_chip(25,15,P3),
+    P4 = set_min_chip(25,10,P3),
     {R3,P5} = rebuy(P4),
     P6 = bust(P5),
     {{A1,AP1},P7} = addon(300,P6),
