@@ -62,8 +62,10 @@ round_chips(C,M) ->
     M * (round(C/M)).
 
 
+test(0) ->
+    new(6,1000,5);
 test(1) ->
-    Pot = new(6,1000,5),
+    Pot = test(0),
     {R1,P2} = rebuy(Pot),
     {R2,P3} = rebuy(P2),
     P4 = set_min_chip(25,10,P3),

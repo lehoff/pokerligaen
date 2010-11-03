@@ -5,7 +5,8 @@
   {vsn, "0.0.1"},
   {modules,
    [ pot_ds,
-     pl_round
+     pl_round,
+     pl_night
    ]},
 
   {registered, []},

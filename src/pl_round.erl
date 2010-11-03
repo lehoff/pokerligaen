@@ -54,13 +54,19 @@ new(Ps,Bs,M) ->
 -spec end_round(#pl_round{}) -> #pl_round{}.
 %% The last player collects the bounty on his own head.
 end_round(#pl_round{alive=[P]}=R) ->
-    bust(P,P,R).
+    bust(P,P,R);
+end_round(_) ->
+    erlang:error(more_than_one_player_left).
 
--spec calculate_points(#pl_round{}) -> 
-			      {CleanRank::[{atom(),pos_integer(),points()}],
-			       FinalRank::[{atom(),pos_integer(),points()}],
-			       TotalPoints::[{atom(),points()}],
-			       Bounties::[{atom(),pos_integer(),points()}]}.
+-type result() ::
+	{clean_rank,CleanRank::[{atom(),pos_integer(),points()}]} |
+        {final_rank,FinalRank::[{atom(),pos_integer(),points()}]} |
+	{total_points,TotalPoints::[{atom(),points()}]} |
+	{bounties,Bounties::[{atom(),pos_integer(),points()}]} |
+	{fractions,Fractions::[{atom(),float()}]}.
+
+
+-spec calculate_points(#pl_round{}) -> [result()].
 calculate_points(#pl_round{alive=[],
 			   bounties_collected=BountyCount,
 			   fractions=Fractions,
@@ -83,7 +89,11 @@ calculate_points(#pl_round{alive=[],
 	[ {P,BC,BC*BV} || 
 	    {P,BC} <- [ {P1, proplists:get_value(P1,BountyCount,0)} 
 			|| P1 <- Players ] ],
-    {CleanPoints,FinalPoints,TotalPoints,Bounties}.
+    [{clean_points,CleanPoints},
+     {final_points,FinalPoints},
+     {total_points,TotalPoints},
+     {bounties,Bounties},
+     {fractions,Fractions}].
 			       
 			      
 
@@ -106,7 +116,8 @@ rebuy(P,#pl_round{busted=Bs,
 -spec addon(P::atom(),AP::0..100,#pl_round{}) -> #pl_round{}.
 addon(P,AP,#pl_round{}=R) ->
     %% @todo: add check that P is alive before adding chips.
-    add_event({addon,{P,AP}},R).
+    add_event({addon,{P,AP}},
+	      update_fraction(P,AP,R)).
 
 -spec update_fraction(P::atom(),FPercent::0..100,#pl_round{}) -> #pl_round{}.		     
 update_fraction(P,FPercent,#pl_round{fractions=Fs,
@@ -163,7 +174,8 @@ get_bounty(P,Hitman,#pl_round{bounties=Bs,
 		 
 
 enumerate_busts(#pl_round{events=Es}) -> 
-    Busts = [ P || {bust,{P,_}} = E <- Es],
+    Busts = [ P ||  {T,{P,_}} = E <- Es,
+	    T == bust orelse T == addon],
     Numbers = lists:seq(1,length(Busts)),
     lists:zip(Busts,Numbers).
 
@@ -180,7 +192,8 @@ no_rebuys(#pl_round{events=Es}) ->
 
 sum_addon_percentage(#pl_round{events=Es}) ->
     APs = [ AP || {addon,{_,AP}} <- Es ],
-    lists:sum(APs).
+    lists:sum(APs) / 100.
+
 		       
 assign_points(Ranking,Base) ->
     [ {P,R,round(rank_fraction(R) * Base)} || {P,R} <- Ranking ].
@@ -199,18 +212,21 @@ get_player_points(P,Points) ->
     end.
 
 bounty_value(N) ->
-    %% Was about 4% of #1 points before
-    round(0.04*rank_fraction(1)*points_base(N,0,0)).
+    %% Was about 4% of #1 points before, but now we have two "rounds"
+    round(0.10*rank_fraction(1)*points_base(N,0,0)).
 
 points_base(N,R,SA) ->
     math:pow(N+0.7*(R+SA),1.75) * 30.
 
+test(0) ->
+    new([a,b,c,d,e,f],[{a,2},{b,1}],1);
 test(1) ->
-    R1 = new([a,b,c,d,e,f],[{a,2},{b,1}],1),
+    R1 = test(0),
     R2 = bust(a,c,R1),
     R2a = rebuy(a,R2),
     R3 = bust(c,b,R2a),
-    [R1,R2,R3];
+    R4 = addon(d,40,R3),
+    [R1,R2,R3,R4];
 test(2) ->
     lists:last(test(1));
 test(3) ->
@@ -220,9 +236,10 @@ test(3) ->
     R3 = bust(c,b,R2a),
     R4 = rebuy(c,R3),
     R5 = bust(d,a,R4),
-    R6 = bust(e,b,R5),
-    R7 = bust(f,c,R6),
-    R8 = bust(c,a,R7),
+    R5a = addon(e,40,R5),
+    R6 = bust(f,b,R5a),
+    R7 = bust(c,a,R6),
+    R8 = bust(e,a,R7),
     R9 = bust(a,b,R8),
     end_round(R9);
 test(4) ->
