@@ -18,10 +18,12 @@
 	  rebuy/2,
 	  addon/3,
 	  end_round/1,
-	  calculate_points/1
+	  calculate_points/1,
+	  events/1
 	]).
 
-%%-type event() :: {bust,Player}
+%-type event() :: {bust,Player}
+-type event() :: term().
 -type points() :: non_neg_integer().
 
 -record(pl_round,
@@ -36,6 +38,11 @@
 	 multiplier = 1,
 	 events  = []
 	}).
+
+-spec events(#pl_round{}) -> [event()].
+events(#pl_round{events=Es}) ->
+    Es.
+		     
 
 -spec new([Player::atom()],
 	  Bounties::[{atom(),pos_integer()}],

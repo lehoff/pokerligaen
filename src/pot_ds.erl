@@ -28,6 +28,7 @@ new(Players,InitialChips,MinChip) ->
 bust(#pot{players=P}=Pot) ->
     Pot#pot{players=P-1}.
 
+
 -spec rebuy(#pot{}) -> {Chips::pos_integer(),#pot{}}.
 rebuy(#pot{players=P,
 	   chips = C,
@@ -36,16 +37,30 @@ rebuy(#pot{players=P,
     R = round_chips(R1,M),
     {R, Pot#pot{chips = C + R}}.
 		  
+%% This will not be used directly since it gives the addon'ers the
+%% same amount of chips and too many to the ones with few before the
+%% add-on
+-spec addons([CurChips::pos_integer()],#pot{}) -> {[{ExtraChips::pos_integer(),AddonPcnt::0..100}],
+						   #pot{}}.
+addons(CurChips,#pot{players=P,
+		     chips=C,
+		     min_chip=M}=Pot) ->
+    {RebuyChips,_} = rebuy(Pot),
+    SumCurrent = lists:sum(CurChips),
+    NoAddons = length(CurChips),
+    SumAddons = (NoAddons*C - P * SumCurrent) / (P - NoAddons),
+    Target = round_chips((SumCurrent + SumAddons) / NoAddons, M),
+    Extras = [ {Target - CC, Target, round(100*(Target-CC)/RebuyChips)} || CC <- CurChips],
+    SumAddons2 = lists:sum([ Target - CC || CC <- CurChips ]),
+    {Extras,Pot#pot{chips=C+SumAddons2}}.
+
 -spec addon(CurrentChips::pos_integer(),#pot{}) ->
     {{ExtraChips::pos_integer(),AddonPercentage::0..100},#pot{}}.
 addon(CurChips,#pot{players=P,
 		    chips= C,
 		    min_chip=M}=Pot) ->
-    {RebuyChips,_} = rebuy(Pot),
-    A1 = (C - P*CurChips) / (P-1),
-    A = round_chips(A1,M),
-    AP = round(100*A/RebuyChips),
-    {{A,AP},Pot#pot{chips=C+A}}.
+    {[Extra],Pot2} = addons([CurChips],Pot),
+    {Extra,Pot2}.
  
 -spec set_min_chip(NewMin::pos_integer(),
 		   RoundUp::pos_integer(),
@@ -71,5 +86,15 @@ test(1) ->
     P4 = set_min_chip(25,10,P3),
     {R3,P5} = rebuy(P4),
     P6 = bust(P5),
-    {{A1,AP1},P7} = addon(300,P6),
-    [{R1,P2},{R2,P3},P4,{R3,P5},P6,{{A1,AP1},P7}].
+    {{A1,T1,AP1},P7} = addon(300,P6),
+    {{A2,T2,AP2},P8} = addon(1500,P7),
+    [{R1,P2},{R2,P3},P4,{R3,P5},P6,{{A1,T1,AP1},P7},{{A2,T2,AP2},P8}];
+test(2) ->
+    Pot = test(0),
+    {R1,P2} = rebuy(Pot),
+    {R2,P3} = rebuy(P2),
+    P4 = set_min_chip(25,10,P3),
+    {R3,P5} = rebuy(P4),
+    P6 = bust(P5),
+    {Extras,P7} = addons([300,1500],P6),
+    [{R1,P2},{R2,P3},P4,{R3,P5},P6,{Extras,P7}].

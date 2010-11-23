@@ -6,7 +6,8 @@
   {modules,
    [ pot_ds,
      pl_round,
-     pl_night
+     pl_night,
+     pl_results
    ]},
 
   {registered, []},
