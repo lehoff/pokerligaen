@@ -10,7 +10,7 @@
 -compile(export_all).
 
 -define(INITIAL_FRACTION,0.7).
--define(MAX_FRACTION,0.9).
+-define(MAX_FRACTION,1).
 
 -export([ 
 	  new/3,
@@ -89,15 +89,17 @@ calculate_points(#pl_round{alive=[],
     FinalPointsA = assign_points(FR,FinalPointsBase),
     FinalPoints = apply_fractions(FinalPointsA,Fractions),
     TotalPoints = 
-	lists:keysort(2,
-		      [ {P,get_player_points(P,CleanPoints) +
-			 get_player_points(P,FinalPoints)} || P <- Players ]),
+	lists:reverse(
+	  lists:keysort(2,
+			[ {P,get_player_points(P,CleanPoints) +
+			   get_player_points(P,FinalPoints)} || P <- Players ])),
     BV = Multi * bounty_value(N),
     Bounties = 
-	lists:keysort(2,
-		      [ {P,BC,BC*BV} || 
-			  {P,BC} <- [ {P1, proplists:get_value(P1,BountyCount,0)} 
-				      || P1 <- Players ] ]),
+	lists:reverse(
+	  lists:keysort(2,
+			[ {P,BC,BC*BV} || 
+			    {P,BC} <- [ {P1, proplists:get_value(P1,BountyCount,0)} 
+					|| P1 <- Players ] ])),
     [{clean_points,CleanPoints},
      {final_points,FinalPoints},
      {total_points,TotalPoints},
@@ -132,7 +134,7 @@ addon(P,AP,#pl_round{}=R) ->
 update_fraction(P,FPercent,#pl_round{fractions=Fs,
 				     current_fraction=CF,
 				     fraction_step=S}=R) ->
-    MyF = CF + 2*S - (S * FPercent/100),
+    MyF = roundf(CF + 2*S - (S * FPercent/100)),
     R#pl_round{fractions=[{P,MyF}|Fs],
 	       current_fraction=MyF}.
 	       
@@ -199,6 +201,9 @@ rank_fraction(2) -> 0.3;
 rank_fraction(3) -> 0.2;
 rank_fraction(_) -> 0.
 
+roundf(F) ->
+    round(F*100)/100.
+
 no_rebuys(#pl_round{events=Es}) ->    
     length( [ E || {rebuy,_} = E <- Es ] ).
 
@@ -238,7 +243,10 @@ test(1) ->
     R2a = rebuy(a,R2),
     R3 = bust(c,b,R2a),
     R4 = addon(d,40,R3),
-    [R1,R2,R3,R4];
+    R5 = addon(b,20,R4),
+    R6 = addon(e,-50,R5),
+    R7 = addon(f,-60,R6),
+    [R1,R2,R3,R4,R5,R6,R7];
 test(2) ->
     lists:last(test(1));
 test(3) ->

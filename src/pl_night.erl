@@ -223,6 +223,8 @@ test(2) ->
     bust(c,b,true),
     bust(d,a,false),
     addon(e,400),
+    addon(b,1500),
+    addon(f,2200),
     bust(f,b,false),
     bust(c,a,false),
     bust(e,a,false),
