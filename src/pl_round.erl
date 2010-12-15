@@ -89,13 +89,15 @@ calculate_points(#pl_round{alive=[],
     FinalPointsA = assign_points(FR,FinalPointsBase),
     FinalPoints = apply_fractions(FinalPointsA,Fractions),
     TotalPoints = 
-	[ {P,get_player_points(P,CleanPoints) +
-	     get_player_points(P,FinalPoints)} || P <- Players ],
+	lists:keysort(2,
+		      [ {P,get_player_points(P,CleanPoints) +
+			 get_player_points(P,FinalPoints)} || P <- Players ]),
     BV = Multi * bounty_value(N),
     Bounties = 
-	[ {P,BC,BC*BV} || 
-	    {P,BC} <- [ {P1, proplists:get_value(P1,BountyCount,0)} 
-			|| P1 <- Players ] ],
+	lists:keysort(2,
+		      [ {P,BC,BC*BV} || 
+			  {P,BC} <- [ {P1, proplists:get_value(P1,BountyCount,0)} 
+				      || P1 <- Players ] ]),
     [{clean_points,CleanPoints},
      {final_points,FinalPoints},
      {total_points,TotalPoints},
@@ -189,6 +191,9 @@ enumerate_busts(#pl_round{events=Es}) ->
 bust_le({_,N},{_,M}) when M =< N -> true;
 bust_le(_,_) -> false.
     
+total_le(A,B) -> bust_le(A,B).
+    
+
 rank_fraction(1) -> 0.5;
 rank_fraction(2) -> 0.3;
 rank_fraction(3) -> 0.2;
