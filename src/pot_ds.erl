@@ -57,13 +57,25 @@ rebuy(#pot{players=P,
 -spec addon(CurrentChips::pos_integer(),#pot{}) ->
     {{ExtraChips::pos_integer(),AddonPercentage::0..100},#pot{}}.
 
+%% If the player has more chips than the average chip count he gets no
+%% chips, but his AddonPercentage becomes negative and that means a higher
+%% fraction for the the final points.
+addon(CurChips,#pot{players=P,
+		    chips= C,
+		    min_chip=M}=Pot) when CurChips > C/P ->
+    Extra = { 0, CurChips, round(100*(1-(CurChips*P)/C))},
+    {Extra,Pot};
+
+%% When a player has less than the average chip count his
+%% AddonPercentage becomes how much of the new average chip count he
+%% has to get to level up with the rest.
 addon(CurChips,#pot{players=P,
 		    chips= C,
 		    min_chip=M}=Pot) ->
     {RebuyChips,_} = rebuy(Pot),
     Addon = (C - P * CurChips) / (P - 1),
     Target = round_chips(CurChips + Addon, M),
-    Extra = {ExtraChips,_,_} = {Target - CurChips, Target, round(100*(Target-CurChips)/RebuyChips)},
+    Extra = {ExtraChips,_,_} = {Target - CurChips, Target, round(100*(Target-CurChips)/Target)},
     {Extra,Pot#pot{chips=C+ExtraChips}}.
  
 -spec set_min_chip(NewMin::pos_integer(),
@@ -104,4 +116,4 @@ test(2) ->
     [{R1,P2},{R2,P3},P4,{R3,P5},P6,{Extra,P7}];
 test(3) ->
     Pot = test(0),
-    addon(3000,Pot).
+    addon(2000,Pot).
