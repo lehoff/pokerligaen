@@ -25,7 +25,8 @@ save_result(Event) ->
     dets:insert(?NAME,{Event,Res}).
 
 get_result(Event) ->
-    dets:lookup(?NAME,Event).
+    [{Event,Res}] = dets:lookup(?NAME,Event),
+    Res.
 
 all_results() ->
     dets:traverse(?NAME,fun(X) -> {continue,X} end).
@@ -39,7 +40,7 @@ close() ->
 
 %%% 
 fix_event(Event) ->
-    [{Event,Res}] = get_result(Event),
+    Res = get_result(Event),
     Events = proplists:get_value(events,Res),
     Bs = event_bounties(Event),
     Multi = event_multi(Event),

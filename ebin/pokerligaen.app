@@ -7,7 +7,9 @@
    [ pot_ds,
      pl_round,
      pl_night,
-     pl_results
+     pl_results,
+     pl_scores,
+     pl_print
    ]},
 
   {registered, []},
