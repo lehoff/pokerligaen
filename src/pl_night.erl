@@ -12,7 +12,9 @@
 -compile(export_all).
 
 %% API
--export([start/3]).
+-export([start/3,
+	 start_replay/1,
+	 stop/0]).
 %% -export([
 %% 	 buyin/1,
 %% 	 set_bounty/1,
@@ -23,7 +25,8 @@
 	 chip_up/2,
 	 addon/2,
 	 end_game/0,
-	 get_result/0
+	 get_result/0,
+	 replay_events/1
 	]).
 
 -export([status/0]).
@@ -53,6 +56,15 @@
 start(Ps,Bs,Multi) ->
     gen_server:start({local, ?MODULE}, ?MODULE, [Ps,Bs,Multi], []).
 
+start_replay([{init,{Ps,Bs,Multi}}|Es]) ->
+    start(Ps,Bs,Multi),
+    replay_events(Es).
+
+stop() ->
+    gen_server:call(?MODULE,stop).
+
+%%%%%%%
+
 bust(P,Hitman,Rebuy) ->
     gen_server:call(?MODULE,{bust,{P,Hitman,Rebuy}}).
 
@@ -71,16 +83,26 @@ end_game() ->
 get_result() ->
     gen_server:call(?MODULE,get_result).
 
+replay_events(Es) ->
+    [ gen_server:call(?MODULE,E) || E <- Es ].
+
+
 status() ->
     gen_server:call(?MODULE,status).
+
 
 
 %%%%
 init([Players,Bounties,Multi]) ->
     R = pl_round:new(Players,Bounties,Multi),
     Pot = pot_ds:new(length(Players),1000,5),
-    {ok, #state{pl_round=R,pot=Pot}}.
+    {ok, #state{pl_round=R,pot=Pot,
+		events=[{init,{Players,Bounties,Multi}}] 
+	       }}.
 
+
+handle_call(stop,_From,State) ->
+    {stop,normal,ok,State};    
 
 handle_call(E,_From,State) ->
     {Reply,St2} = execute_event(E,State),
