@@ -1,0 +1,78 @@
+Total per 2010-12:
+
+Navn        Bounties  Events  Total
+Benny            634    2228   2862
+Torben           350    2116   2466
+Soren            364    2035   2399
+Rune             475    1130   1605
+Peter            171    1350   1521
+Jacob            342     564    906
+Lars             135       0    135
+Nick               0       0      0
+Casper             0       0      0
+
+============================================
+December 2010 - Xmas Sprint - +50%
+--------------------------------------------
+Navn        Clean  Final  Total
+Benny         271   1305   1576
+Torben        407    563    970
+Rune          678      0    678
+Soren           0    609    609
+Nick            0      0      0
+Lars            0      0      0
+Peter           0      0      0
+
+Navn        Bounties  Points
+Benny              8     544
+Rune               5     340
+Soren              2     136
+Torben             1      68
+Nick               0       0
+Lars               0       0
+Peter              0       0
+
+============================================
+November 2010
+--------------------------------------------
+Navn        Clean  Final  Total
+Torben          0    575    575
+Peter         181    306    487
+Rune          452      0    452
+Benny           0    424    424
+Soren         271      0    271
+Nick            0      0      0
+Lars            0      0      0
+
+Navn        Bounties  Points
+Torben             5     225
+Rune               3     135
+Lars               3     135
+Benny              2      90
+Soren              0       0
+Nick               0       0
+Peter              0       0
+
+============================================
+Oktober 2010
+--------------------------------------------
+Navn        Clean  Final  Total
+Soren           0   1155   1155
+Peter         342    521    863
+Torben        571      0    571
+Jacob           0    564    564
+Benny         228      0    228
+Lars            0      0      0
+Nick            0      0      0
+Casper          0      0      0
+
+Navn        Bounties  Points
+Jacob              6     342
+Soren              4     228
+Peter              3     171
+Torben             1      57
+Nick               0       0
+Benny              0       0
+Lars               0       0
+Casper             0       0
+============================================

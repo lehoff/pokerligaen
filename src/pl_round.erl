@@ -50,7 +50,7 @@ events(#pl_round{events=Es}) ->
 new(Ps,Bs,M) ->
     Bs1 = [ {P,B+1} || {P,B} <- Bs ],
     N = length(Ps),
-    FS = (?MAX_FRACTION - ?INITIAL_FRACTION) / N,
+    FS = (?MAX_FRACTION - ?INITIAL_FRACTION) / (N-1),
     #pl_round{alive=Ps,
 	      no_players=N,
 	      bounties = Bs1,
@@ -83,8 +83,8 @@ calculate_points(#pl_round{alive=[],
     Players = players_from_bustenum(Busts),
     CR = clean_ranking(Busts),
     FR = final_ranking(Busts),
-    CleanPointsBase = Multi * points_base(N,0,0),
-    FinalPointsBase = Multi * points_base(N,no_rebuys(R),sum_addon_percentage(R)),
+    CleanPointsBase = round(Multi * points_base(N,0,0)),
+    FinalPointsBase = round(Multi * points_base(N,no_rebuys(R),sum_addon_percentage(R))),
     CleanPoints = assign_points(CR,CleanPointsBase),
     FinalPointsA = assign_points(FR,FinalPointsBase),
     FinalPoints = apply_fractions(FinalPointsA,Fractions),
@@ -93,7 +93,7 @@ calculate_points(#pl_round{alive=[],
 	  lists:keysort(2,
 			[ {P,get_player_points(P,CleanPoints) +
 			   get_player_points(P,FinalPoints)} || P <- Players ])),
-    BV = Multi * bounty_value(N),
+    BV = round(Multi * bounty_value(N)),
     Bounties = 
 	lists:reverse(
 	  lists:keysort(2,

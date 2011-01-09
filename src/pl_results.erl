@@ -47,7 +47,12 @@ fix_event(Event) ->
     Players = event_players(Res),
     pl_night:start_replay([{init,{Players,Bs,Multi}}|Events]),
     save_result(Event).
-    
+
+fix_event2(Event) ->    
+    Res = get_result(Event),
+    Events = proplists:get_value(events,Res),
+    pl_night:start_replay(Events),
+    save_result(Event).
 		   
 
 
