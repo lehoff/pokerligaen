@@ -230,7 +230,10 @@ get_player_points(P,Points) ->
 
 bounty_value(N) ->
     %% Was about 4% of #1 points before, but now we have two "rounds"
-    round(0.10*rank_fraction(1)*points_base(N,0,0)).
+    %% 0.10 gives around bounty points at 27% of the total points, which is
+    %% a lot higher than the ~20% of the previous points scheme. Furthermore,
+    %% the bounty points are now permanent so they should be a bit lower.
+    round(0.06*rank_fraction(1)*points_base(N,0,0)).
 
 points_base(N,R,SA) ->
     math:pow(N+0.7*(R+SA),1.75) * 30.

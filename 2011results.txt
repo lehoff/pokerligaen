@@ -1,13 +1,13 @@
 Total per 2010-12:
 
 Navn        Bounties  Events  Total
-Benny            634    2228   2862
-Torben           350    2116   2466
-Soren            364    2035   2399
-Rune             475    1130   1605
-Peter            171    1350   1521
-Jacob            342     564    906
-Lars             135       0    135
+Benny            382    2229   2611
+Torben           210    2117   2327
+Soren            218    2036   2254
+Peter            102    1351   1453
+Rune             286    1130   1416
+Jacob            204     564    768
+Lars              81       0     81
 Nick               0       0      0
 Casper             0       0      0
 
@@ -24,10 +24,10 @@ Lars            0      0      0
 Peter           0      0      0
 
 Navn        Bounties  Points
-Benny              8     544
-Rune               5     340
-Soren              2     136
-Torben             1      68
+Benny              8     328
+Rune               5     205
+Soren              2      82
+Torben             1      41
 Nick               0       0
 Lars               0       0
 Peter              0       0
@@ -36,29 +36,30 @@ Peter              0       0
 November 2010
 --------------------------------------------
 Navn        Clean  Final  Total
-Torben          0    575    575
+Torben          0    576    576
 Peter         181    306    487
 Rune          452      0    452
-Benny           0    424    424
+Benny           0    425    425
 Soren         271      0    271
 Nick            0      0      0
 Lars            0      0      0
 
 Navn        Bounties  Points
-Torben             5     225
-Rune               3     135
-Lars               3     135
-Benny              2      90
+Torben             5     135
+Rune               3      81
+Lars               3      81
+Benny              2      54
 Soren              0       0
 Nick               0       0
 Peter              0       0
+
 
 ============================================
 Oktober 2010
 --------------------------------------------
 Navn        Clean  Final  Total
-Soren           0   1155   1155
-Peter         342    521    863
+Soren           0   1156   1156
+Peter         343    521    864
 Torben        571      0    571
 Jacob           0    564    564
 Benny         228      0    228
@@ -67,12 +68,13 @@ Nick            0      0      0
 Casper          0      0      0
 
 Navn        Bounties  Points
-Jacob              6     342
-Soren              4     228
-Peter              3     171
-Torben             1      57
+Jacob              6     204
+Soren              4     136
+Peter              3     102
+Torben             1      34
 Nick               0       0
 Benny              0       0
 Lars               0       0
 Casper             0       0
+
 ============================================
