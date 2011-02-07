@@ -1,15 +1,43 @@
-Total per 2010-12:
+
+Total per 2011-01:
 
 Navn        Bounties  Events  Total
-Benny            382    2229   2611
-Torben           210    2117   2327
-Soren            218    2036   2254
+Soren            512    3647   4159
+Benny            424    2947   3371
+Jacob            456    2052   2508
+Torben           294    2117   2411
 Peter            102    1351   1453
 Rune             286    1130   1416
-Jacob            204     564    768
+Nick              84       0     84
 Lars              81       0     81
-Nick               0       0      0
+Thomas             0       0      0
+Shuo               0       0      0
 Casper             0       0      0
+
+============================================
+Januar 2011
+--------------------------------------------
+Navn        Clean  Final  Total
+Soren         421   1190   1611
+Jacob         702    786   1488
+Benny         281    437    718
+Peter           0      0      0
+Shuo            0      0      0
+Lars            0      0      0
+Nick            0      0      0
+Torben          0      0      0
+Thomas          0      0      0
+
+Navn        Bounties  Points
+Soren              7     294
+Jacob              6     252
+Torben             2      84
+Nick               2      84
+Benny              1      42
+Shuo               0       0
+Thomas             0       0
+Lars               0       0
+Peter              0       0
 
 ============================================
 December 2010 - Xmas Sprint - +50%
