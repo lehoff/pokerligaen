@@ -9,7 +9,8 @@
      pl_night,
      pl_results,
      pl_scores,
-     pl_print
+     pl_print,
+     pl_init
    ]},
 
   {registered, []},

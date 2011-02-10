@@ -1,18 +1,42 @@
 
-Total per 2011-01:
+Total per 2011-02:
 
 Navn        Bounties  Events  Total
 Soren            512    3647   4159
-Benny            424    2947   3371
+Benny            478    3578   4056
+Torben           321    2298   2619
 Jacob            456    2052   2508
-Torben           294    2117   2411
-Peter            102    1351   1453
+Peter            102    1802   1904
 Rune             286    1130   1416
-Nick              84       0     84
-Lars              81       0     81
+Lars             243     706    949
+Mo                 0     452    452
+Nick             219       0    219
 Thomas             0       0      0
 Shuo               0       0      0
 Casper             0       0      0
+
+============================================
+Februar 2011
+--------------------------------------------
+Navn        Clean  Final  Total
+Lars            0    706    706
+Benny         271    360    631
+Mo            452      0    452
+Peter           0    451    451
+Torben        181      0    181
+Nick            0      0      0
+Soren           0      0      0
+
+Navn        Bounties  Points
+Lars               6     162
+Nick               5     135
+Benny              2      54
+Torben             1      27
+Mo                 0       0
+Soren              0       0
+Peter              0       0
+
+
 
 ============================================
 Januar 2011
