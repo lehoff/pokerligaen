@@ -2,7 +2,10 @@
 
 
 -export([
-	 calculate/0
+	 calculate/0,
+	 no_rebuys/1,
+	 no_buyins/1,
+	 multiplier/1
 	]).
 
 calculate() ->
@@ -23,7 +26,10 @@ total_points(Events) ->
 			
 
 extract_subresults(SubRes,Events) ->
-    [ proplists:get_value(SubRes,pl_results:get_result(E)) || E <- Events ].
+    [ extract_subresult(SubRes,E) || E <- Events ].
+
+extract_subresult(SubRes,Event) ->
+    proplists:get_value(SubRes,pl_results:get_result(Event)).
     
 sum_results(F,Xs) ->
     Total = lists:foldl( fun(R,Acc) ->
@@ -43,4 +49,14 @@ bounties(Events) ->
     Bs = extract_subresults(bounties,Events),
     sum_results(fun({P,_,B}) -> {P,B} end,Bs).
     
-			      
+no_rebuys(Evt) ->		      
+    Es = pl_results:get_result(Evt),
+    length( [ E || {bust,{_,_,true}} = E <- proplists:get_value(events,Es) ] ). 
+
+no_buyins(Evt) ->
+    {Ps,_Bs,_M} = proplists:get_value(init,extract_subresult(events,Evt)),
+    length(Ps).
+
+multiplier(Evt) ->
+    {_Ps,_Bs,M} = proplists:get_value(init,extract_subresult(events,Evt)),
+    M.

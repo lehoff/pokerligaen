@@ -10,7 +10,8 @@
      pl_results,
      pl_scores,
      pl_print,
-     pl_init
+     pl_init,
+     pl_tally
    ]},
 
   {registered, []},
