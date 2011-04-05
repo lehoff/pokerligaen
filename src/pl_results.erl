@@ -54,7 +54,14 @@ fix_event2(Event) ->
     pl_night:start_replay(Events),
     save_result(Event).
 		   
-
+fix_201103() ->
+    Event = {2011,03},
+    Res = get_result(Event),
+    [Init,_|Rest] = proplists:get_value(events,Res),
+    Events = [Init,{bust,{nick,peter,true}}|Rest],
+    pl_night:start_replay(Events),
+    save_result(Event).
+    
 
 event_bounties({2010,10}) ->
    [{peter,1}]; 
