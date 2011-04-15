@@ -3,7 +3,8 @@
 
 -export([
 	 print_total/0,
-	 print_event/1
+	 print_event/1,
+	 print_events_scores/0
 	 ]).
 
 -define(NAMES,
@@ -21,12 +22,19 @@
 	 {mo,  "Mo"},
 	 {shuo, "Shuo"},
 	 {raghav, "Raghav"},
-	 {jannik, "Jannik"}
+	 {jannik, "Jannik"},
+	 {alex, "Alex"}
 	]).
 
 print_total() ->
     T = pl_scores:calculate(),
-    print_table(["Navn","Bounties","Events","Total"],T).
+    print_table(["Navn","Bounties","Events","Total","Min"],T).
+
+print_events_scores() ->
+    Events = pl_results:all_events(),
+    TPs = pl_scores:collect_total_points(pl_scores:extract_subresults(total_points,Events)),
+    io:format("Navn      Scores~n",[]),
+    [ io:format("~-10s~p~n",[pretty_name(P),Scores]) || {P,Scores} <- TPs ].
 
 print_event(Event) ->
     Res = pl_results:get_result(Event),
@@ -79,9 +87,15 @@ contents_to_strings(Contents) ->
 
 content_to_string([H|T]) ->
     [ pretty_name(H) |
-      [ integer_to_list(E) || E <- T ]
+      [ content_to_list(E) || E <- T ]
     ].
     
+content_to_list(N) when is_integer(N) ->
+    integer_to_list(N);
+content_to_list(Xs) when is_list(Xs) ->
+    Ls =[ integer_to_list(X) || X <- Xs ],
+    string:join(Ls,",").
+
 pretty_name(Atom) ->
     proplists:get_value(Atom,?NAMES,atom_to_list(Atom)).
 			

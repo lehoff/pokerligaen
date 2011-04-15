@@ -1,5 +1,6 @@
 -module(pl_scores).
 
+-compile(export_all).
 
 -export([
 	 calculate/0,
@@ -10,11 +11,21 @@
 
 calculate() ->
     Events = pl_results:all_events(),
-    TotalPoints = total_points(Events),
+%%    TotalPoints = total_points(Events),
+    AdjustedTotal = total_minus_3(Events),
+    TotalPoints = [ {Pl,T} || {Pl,{T,_,_}} <- AdjustedTotal ],
     Bounties = bounties(Events),
     GrandTotal = sum_results(fun id/1, TotalPoints ++ Bounties),
-    [ {P,proplists:get_value(P,Bounties,0),proplists:get_value(P,TotalPoints,0),G} ||
-      {P,G} <- GrandTotal ].
+    lists:reverse(
+      lists:keysort(4,
+		    [
+		     {P,proplists:get_value(P,Bounties,0),proplists:get_value(P,TotalPoints,0),G,
+		      lowest_score(P,AdjustedTotal)} ||
+			{P,G} <- GrandTotal ])).
+
+lowest_score(P,Scores) ->
+    {_,Low,_} = proplists:get_value(P,Scores,{na,0,0}),
+    Low.
 
 
 %% event_players(Results) ->
@@ -23,7 +34,29 @@ calculate() ->
 total_points(Events) ->
     TPs = extract_subresults(total_points,Events),
     sum_results(fun id/1,TPs).
-			
+
+total_minus_3(Events) ->			
+    TPs = extract_subresults(total_points,Events),
+    EventScores = collect_total_points(TPs),
+    AdjustedScores = adjust_scores(3,9,EventScores),
+    [ {Pl,{lists:sum(Ss),lists:last(Ss),Ss}} 
+      || {Pl,Ss} <- AdjustedScores ].
+    
+adjust_scores(Dump,NoEvents,EventScores) ->
+    [ {Pl,adjust_score(Dump,NoEvents,Scores)} || {Pl,Scores} <- EventScores ].
+
+adjust_score(Dump,NoEvents,Scores) ->
+    Pad = lists:duplicate(NoEvents,0),
+    NewScores = lists:sublist(lists:reverse(lists:sort(Scores++Pad)),
+			      NoEvents-Dump).
+
+collect_total_points(TPs) ->
+    lists:foldl( fun({Pl,P},Acc) ->
+			 orddict:append_list(Pl,[P],Acc)
+		 end,
+		 orddict:new(),
+		 lists:flatten(TPs)).
+    
 
 extract_subresults(SubRes,Events) ->
     [ extract_subresult(SubRes,E) || E <- Events ].
