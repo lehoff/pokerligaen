@@ -5,36 +5,66 @@ NB! De tre dårligste resultater over hele sæsonen tæller ikke med.
 De runder man ikke har været med i giver et rundt nul.
 
 Navn        Bounties  Events  Total  Min
-Soren            563    4792   5355  207
-Benny            546    3919   4465  228
-Peter            378    3719   4097    0
+Soren            683    7921   8604  271
+Peter            738    6271   7009  282
+Benny           1026    5858   6884  341
 Torben           439    3194   3633  342
+Lars             593    2818   3411    0
 Shuo             442    2802   3244    0
 Jacob            524    2280   2804    0
-Lars             353    1622   1975    0
 Rune             286    1130   1416    0
 Nick             642     603   1245    0
 Alex             136     770    906    0
-Mo                 0     452    452    0
+Mo               240     452    692    0
+Thomas           240       0    240    0
 Casper             0       0      0    0
-Thomas             0       0      0    0
 
 Scores fra de enkelte aftener:
 
 Navn      Scores
-Alex      [770,0]
-Benny     [228,425,1576,718,631,138,341,0]
+Alex      [770,0,0]
+Benny     [228,425,1576,718,631,138,341,0,2167]
 Casper    [0]
-Jacob     [564,1488,228]
-Lars      [0,0,0,0,706,345,571,0]
-Mo        [452]
-Nick      [0,0,0,0,0,603,0]
-Peter     [864,487,0,0,451,282,0,1635]
+Jacob     [564,1488,228,0]
+Lars      [0,0,0,0,706,345,571,0,1196]
+Mo        [452,0]
+Nick      [0,0,0,0,0,603,0,0]
+Peter     [864,487,0,0,451,282,0,1635,2552]
 Rune      [452,678]
-Shuo      [0,487,2315]
-Soren     [1156,271,609,1611,0,207,0,938]
-Thomas    [0]
-Torben    [571,576,970,0,181,392,343,342]
+Shuo      [0,487,2315,0]
+Soren     [1156,271,609,1611,0,207,0,938,3336]
+Thomas    [0,0]
+Torben    [571,576,970,0,181,392,343,342,0]
+
+
+============================================
+Juni 2011
+--------------------------------------------
+Navn        Clean  Final  Total
+Soren        1993   1343   3336
+Peter         797   1755   2552
+Benny           0   2167   2167
+Lars         1196      0   1196
+Alex            0      0      0
+Torben          0      0      0
+Jacob           0      0      0
+Shuo            0      0      0
+Thomas          0      0      0
+Mo              0      0      0
+Nick            0      0      0
+
+Navn        Bounties  Points
+Benny              4     480
+Peter              3     360
+Mo                 2     240
+Lars               2     240
+Thomas             2     240
+Soren              1     120
+Shuo               0       0
+Torben             0       0
+Nick               0       0
+Alex               0       0
+Jacob              0       0
 
 
 ============================================
