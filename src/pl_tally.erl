@@ -52,13 +52,18 @@ event_entries({2011,2}) ->
     [{fine,6},{softdrink,7,5,1.5},{beer,7,3.5}];
 event_entries({2011,3}) ->
     [{fine,5},{softdrink,2,8,4},{beer,3,8,4}];
-
+event_entries({2011,4}) ->
+    [{fine,6},{softdrink,6,8,4.5},{beer,4,8,4},{coffee,3,3,1}];
+event_entries({2011,5}) ->
+    [{fine,7},{softdrink,8,8,3.5},{beer,4,8,3.5}];
+event_entries({2011,6}) ->
+    [{fine,5},{softdrink,9,8,4},{beer,1,8,4}];
 event_entries(_) ->
     [].
 
 year_prices() ->
     %% engraving + medals
-    215 + 140.
+    226 + 174.
 
 calc_total() ->
     pl_results:init(),
