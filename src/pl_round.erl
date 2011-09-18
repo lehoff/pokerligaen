@@ -13,7 +13,7 @@
 -define(MAX_FRACTION,1).
 
 -export([ 
-	  new/3,
+	  new/2,
 	  bust/3,
 	  rebuy/2,
 	  addon/3,
@@ -29,8 +29,6 @@
 -record(pl_round,
 	{alive = [],
 	 busted = [],
-	 bounties = [],
-	 bounties_collected = [],
 	 no_players = 0,
 	 fractions = [],
 	 current_fraction=0,
@@ -45,15 +43,12 @@ events(#pl_round{events=Es}) ->
 		     
 
 -spec new([Player::atom()],
-	  Bounties::[{atom(),pos_integer()}],
 	  Multiplier::float()) -> #pl_round{}.
-new(Ps,Bs,M) ->
-    Bs1 = [ {P,B+1} || {P,B} <- Bs ],
+new(Ps,M) ->
     N = length(Ps),
-    FS = (?MAX_FRACTION - ?INITIAL_FRACTION) / (N-1),
+    FS = round(1000*(?MAX_FRACTION - ?INITIAL_FRACTION) / (N-1))/1000,
     #pl_round{alive=Ps,
 	      no_players=N,
-	      bounties = Bs1,
 	      fraction_step=FS,
 	      current_fraction=?INITIAL_FRACTION - FS,
 	      multiplier=M}.
@@ -66,44 +61,22 @@ end_round(_) ->
     erlang:error(more_than_one_player_left).
 
 -type result() ::
-	{clean_rank,CleanRank::[{atom(),pos_integer(),points()}]} |
-        {final_rank,FinalRank::[{atom(),pos_integer(),points()}]} |
-	{total_points,TotalPoints::[{atom(),points()}]} |
-	{bounties,Bounties::[{atom(),pos_integer(),points()}]} |
+	{points,Points::[{atom(),points()}]} |
 	{fractions,Fractions::[{atom(),float()}]}.
 
 
 -spec calculate_points(#pl_round{}) -> [result()].
 calculate_points(#pl_round{alive=[],
-			   bounties_collected=BountyCount,
 			   fractions=Fractions,
 			   no_players=N,
 			   multiplier=Multi}=R) ->
     Busts = enumerate_busts(R),
-    Players = players_from_bustenum(Busts),
-    CR = clean_ranking(Busts),
     FR = final_ranking(Busts),
-    CleanPointsBase = round(Multi * points_base(N,0,0)),
-    FinalPointsBase = round(Multi * points_base(N,no_rebuys(R),sum_addon_percentage(R))),
-    CleanPoints = assign_points(CR,CleanPointsBase),
-    FinalPointsA = assign_points(FR,FinalPointsBase),
-    FinalPoints = apply_fractions(FinalPointsA,Fractions),
-    TotalPoints = 
-	lists:reverse(
-	  lists:keysort(2,
-			[ {P,get_player_points(P,CleanPoints) +
-			   get_player_points(P,FinalPoints)} || P <- Players ])),
-    BV = round(Multi * bounty_value(N)),
-    Bounties = 
-	lists:reverse(
-	  lists:keysort(2,
-			[ {P,BC,BC*BV} || 
-			    {P,BC} <- [ {P1, proplists:get_value(P1,BountyCount,0)} 
-					|| P1 <- Players ] ])),
-    [{clean_points,CleanPoints},
-     {final_points,FinalPoints},
-     {total_points,TotalPoints},
-     {bounties,Bounties},
+    PointsBase = round(Multi * points_base(N,no_rebuys(R),sum_addon_percentage(R))),
+    PointsA = assign_points(FR,PointsBase),
+    Points = apply_fractions(PointsA,Fractions),
+
+    [{points,Points},
      {fractions,Fractions}].
 			       
 			      
@@ -111,9 +84,8 @@ calculate_points(#pl_round{alive=[],
 -spec bust(P::atom(),Hitman::atom(),#pl_round{}) -> #pl_round{}.		  
 bust(P,Hitman,#pl_round{alive=Ps,
 			busted=Bs}=R) ->
-    R2 = get_bounty(P,Hitman,R),
-    add_event({bust,{P,Hitman}},R2#pl_round{alive=lists:delete(P,Ps),
-					    busted=[P|Bs]}).
+    add_event({bust,{P,Hitman}},R#pl_round{alive=lists:delete(P,Ps),
+					   busted=[P|Bs]}).
 
 
 -spec rebuy(P::atom(),#pl_round{}) -> #pl_round{}.
@@ -122,7 +94,7 @@ rebuy(P,#pl_round{busted=Bs,
     %% @todo: add check that P is busted before revival.
     add_event({rebuy,P},
 	      update_fraction(P,100,R#pl_round{alive=[P|Alive],
-					     busted=lists:delete(P,Bs)})).
+					       busted=lists:delete(P,Bs)})).
 
 -spec addon(P::atom(),AP::0..100,#pl_round{}) -> #pl_round{}.
 addon(P,AP,#pl_round{}=R) ->
@@ -145,17 +117,12 @@ add_event(E,#pl_round{events=Es}=R) ->
 		     
 -spec process_event(Event::term(),#pl_round{}) ->  #pl_round{}.			   
 process_event({rebuy,P},#pl_round{}=R) ->
-    ok;
+    rebuy(P,R);
 process_event({bust,{P,Hitman}},#pl_round{}=R) ->
-    ok;
+    bust(P,Hitman,R);
 process_event({addon,{P,AP}},#pl_round{}=R) ->
-    ok.
+    addon(P,AP,R).
 
-clean_ranking(BustEnum) ->
-    GetBust = fun (P,BE) ->
-		      hd(proplists:lookup_all(P,BustEnum))
-	      end,
-    calculate_ranking(BustEnum,GetBust).
 
 players_from_bustenum(BustEnum) ->
     proplists:get_keys(BustEnum).
@@ -171,21 +138,14 @@ calculate_ranking(BustEnum,GetBust) ->
 
 final_ranking(BustEnum) ->
     GetBust = fun (P,BE) ->
-		      lists:last(proplists:lookup_all(P,BustEnum))
+		      lists:last(proplists:lookup_all(P,BE))
 	      end,
     calculate_ranking(BustEnum,GetBust).
 
-%% Helper functions
--spec get_bounty(P::atom(),Hitman::atom(),#pl_round{}) -> {Bounty::pos_integer,#pl_round{}}.
-get_bounty(P,Hitman,#pl_round{bounties=Bs,
-			     bounties_collected=BCs}=R) ->
-    B = proplists:get_value(P,Bs,1),
-    R#pl_round{bounties=proplists:delete(P,Bs),
-	       bounties_collected=orddict:update_counter(Hitman,B,BCs)}.
 		 
 
 enumerate_busts(#pl_round{events=Es}) -> 
-    Busts = [ P ||  {T,{P,_}} = E <- Es,
+    Busts = [ P ||  {T,{P,_}} <- Es,
 	    T == bust orelse T == addon],
     Numbers = lists:seq(1,length(Busts)),
     lists:zip(Busts,Numbers).
@@ -196,9 +156,10 @@ bust_le(_,_) -> false.
 total_le(A,B) -> bust_le(A,B).
     
 
-rank_fraction(1) -> 0.5;
-rank_fraction(2) -> 0.3;
-rank_fraction(3) -> 0.2;
+rank_fraction(1) -> 0.47;
+rank_fraction(2) -> 0.27;
+rank_fraction(3) -> 0.16;
+rank_fraction(4) -> 0.10;
 rank_fraction(_) -> 0.
 
 roundf(F) ->
@@ -228,18 +189,12 @@ get_player_points(P,Points) ->
 	    PP
     end.
 
-bounty_value(N) ->
-    %% Was about 4% of #1 points before, but now we have two "rounds"
-    %% 0.10 gives around bounty points at 27% of the total points, which is
-    %% a lot higher than the ~20% of the previous points scheme. Furthermore,
-    %% the bounty points are now permanent so they should be a bit lower.
-    round(0.06*rank_fraction(1)*points_base(N,0,0)).
 
 points_base(N,R,SA) ->
     math:pow(N+0.7*(R+SA),1.75) * 30.
 
 test(0) ->
-    new([a,b,c,d,e,f],[{a,2},{b,1}],1);
+    new([a,b,c,d,e,f],1);
 test(1) ->
     R1 = test(0),
     R2 = bust(a,c,R1),
@@ -253,7 +208,7 @@ test(1) ->
 test(2) ->
     lists:last(test(1));
 test(3) ->
-    R1 = new([a,b,c,d,e,f],[{a,2},{b,1}],1),
+    R1 = new([a,b,c,d,e,f],1),
     R2 = bust(a,c,R1),
     R2a = rebuy(a,R2),
     R3 = bust(c,b,R2a),
