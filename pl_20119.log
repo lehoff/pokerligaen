@@ -1,0 +1,29 @@
+{init,{[a,b,c,d],1,[112,108,95,"2011","9",46,108,111,103]}}.
+{bust,{a,b,true}}.
+{bust,{a,c,false}}.
+{bust,{b,c,false}}.
+{bust,{d,c,false}}.
+end_game.
+{init,{[benny,jacob,lars,mo,nick,peter,rune,shuo,soren,torben],
+       1,
+       [112,108,95,"2011","9",46,108,111,103]}}.
+{bust,{mo,peter,true}}.
+{bust,{torben,nick,true}}.
+{bust,{jacob,nick,true}}.
+{bust,{soren,nick,true}}.
+{bust,{rune,mo,true}}.
+{bust,{nick,peter,true}}.
+{bust,{rune,peter,false}}.
+{bust,{nick,peter,false}}.
+{bust,{soren,peter,false}}.
+{bust,{lars,peter,true}}.
+{bust,{jacob,peter,false}}.
+{bust,{shuo,torben,true}}.
+{bust,{lars,benny,false}}.
+{addon,{benny,800}}.
+{addon,{peter,12075}}.
+{bust,{mo,torben,false}}.
+{bust,{benny,shuo,false}}.
+{bust,{torben,shuo,false}}.
+{bust,{peter,shuo,false}}.
+end_game.

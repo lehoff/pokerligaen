@@ -1,5 +1,6 @@
 -module(pl_print).
 
+-compile(export_all).
 
 -export([
 	 print_total/0,
@@ -38,30 +39,25 @@ print_events_scores() ->
 
 print_event(Event) ->
     Res = pl_results:get_result(Event),
-    EventPoints =
-	lists:reverse(
-	  lists:keysort(4,[ {P,
-			     player_event_points(P,clean_points,Res),
-			     player_event_points(P,final_points,Res),
-			     player_event_points(P,total_points,Res)} 
-			    || P <- event_players(Res) 
-			  ])),				       
-    print_table(["Navn","Clean","Final","Total"],EventPoints),
-    io:format("~n",[]),
-    Bounties = event_bounties(Res),
-    print_table(["Navn","Bounties","Points"],Bounties).
-
-event_bounties(Res) ->
-    proplists:get_value(bounties,Res,[]).
+    EventPoints = player_scores(Res), 
+    print_table(["Navn","Multiplier","Basis","Points"],EventPoints),
+    io:format("~n",[]).
 
 event_players(Results) ->
-    [ P || {P,_,_}  <- proplists:get_value(clean_points,Results) ].
+    [ P || {P,_,_}  <- proplists:get_value(points,Results) ].
 
-player_event_points(Player,CF,Res) when CF == clean_points; CF == final_points ->
-    {_,_,Points} = lists:keyfind(Player,1,proplists:get_value(CF,Res,[])),
-    Points;
-player_event_points(Player,Type,Res) ->
-    proplists:get_value(Player,proplists:get_value(Type,Res,[]),0).
+player_scores(Res) ->
+    Players = event_players(Res),
+    Points = proplists:get_value(points, Res),
+    Fractions = proplists:get_value(fractions, Res),
+    [ player_score(P,Points,Fractions) || P <- Players ].
+
+player_score(Player,Points,Fractions) ->
+    F = proplists:get_value(Player, Fractions),
+    {_,_,P} = lists:keyfind(Player, 1, Points),
+    B = round(P/F),
+    {Player, F, B, P}.
+
 
 print_table(Header,Content) -> 
     NameLengths = [ length(N) || {_,N} <- ?NAMES ],
@@ -92,6 +88,8 @@ content_to_string([H|T]) ->
     
 content_to_list(N) when is_integer(N) ->
     integer_to_list(N);
+content_to_list(F) when is_float(F) ->
+    io_lib:format("~w", [F]);
 content_to_list(Xs) when is_list(Xs) ->
     Ls =[ integer_to_list(X) || X <- Xs ],
     string:join(Ls,",").
