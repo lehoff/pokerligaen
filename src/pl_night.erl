@@ -13,6 +13,7 @@
 
 %% API
 -export([start/3,
+	 start/4,
 	 start_replay/1,
 	 stop/0]).
 %% -export([
@@ -26,7 +27,9 @@
 	 addon/2,
 	 end_game/0,
 	 get_result/0,
-	 replay_events/1
+	 replay_events/1,
+	 recording_on/0,
+	 recording_off/0
 	]).
 
 -export([status/0]).
@@ -41,24 +44,38 @@
 	 terminate/2, code_change/3]).
 
 -record(state, 
-	{event_name,
-	 multiplier=1,
+	{multiplier=1,
 	 players = [],
-	 bounties=[],
 	 pl_round,
 	 pot,
-	 events=[]}).
+	 events=[],
+	 filename,
+	 recording  :: boolean()
+	}).
 
 %%--------------------------------------------------------------------
 %% start_link(EventName,Multi) ->
 %%     gen_fsm:start_link({local,?MODULE}, ?MODULE, [EventName,Multi]).
 
-start(Ps,Bs,Multi) ->
-    gen_server:start({local, ?MODULE}, ?MODULE, [Ps,Bs,Multi], []).
+%% start(P,M) ->
+%%     start(P,M).
+ 
+start(Ps,Multi,Filename) ->
+%%    gen_server:start({local, ?MODULE}, ?MODULE, [Ps,Multi,Filename,true], []).
+    start(Ps, Multi, Filename, true).
 
-start_replay([{init,{Ps,Bs,Multi}}|Es]) ->
-    start(Ps,Bs,Multi),
-    replay_events(Es).
+start(Ps,Multi,Filename,Recording) ->
+    gen_server:start({local, ?MODULE}, ?MODULE, [Ps,Multi,Filename,Recording], []).
+
+
+restart(Filename) ->
+    {ok, Events} = file:consult(Filename),
+    start_replay(Events).
+
+start_replay([{init,{Ps,Multi,Filename}}|Es]) ->
+    start(Ps,Multi,Filename,false),
+    replay_events(Es),
+    recording_on().
 
 stop() ->
     gen_server:call(?MODULE,stop).
@@ -90,80 +107,42 @@ replay_events(Es) ->
 status() ->
     gen_server:call(?MODULE,status).
 
+recording_on() ->
+    gen_server:call(?MODULE, {recording,true}).
+
+recording_off() ->
+    gen_server:call(?MODULE, {recording,false}).
 
 
 %%%%
-init([Players,Bounties,Multi]) ->
-    R = pl_round:new(Players,Bounties,Multi),
-    Pot = pot_ds:new(length(Players),1000,5),
-    {ok, #state{pl_round=R,pot=Pot,
-		events=[{init,{Players,Bounties,Multi}}] 
-	       }}.
-
+init([Players,Multi,Filename,Recording]) ->
+    {init_done,State} = execute_event({init,{Players,Multi,Filename}},
+				      #state{recording=Recording}),
+    {ok, State}.
 
 handle_call(stop,_From,State) ->
     {stop,normal,ok,State};    
 
+handle_call({recording,B}, _From, State) ->
+    {reply, ok, State#state{recording=B}};
 handle_call(E,_From,State) ->
     {Reply,St2} = execute_event(E,State),
     {reply,Reply,St2}.
-%% handle_call({bust,{P,Hitman,Rebuy}}, _From, 
-%% 	    #state{pl_round=R,pot=Pot}=State) ->
-%%     R1 = pl_round:bust(P,Hitman,R),
-%%     case Rebuy of
-%% 	true ->
-%% 	    {Chips,Pot2} = pot_ds:rebuy(Pot),
-%% 	    R2 = pl_round:rebuy(P,R1),
-%% 	    Events =  [{bust,{P,Hitman}},{rebuy,{P,Chips}}],
-%% 	    {reply, {new_chips,Chips}, 
-%% 	     add_events(Events,State#state{pl_round=R2,pot=Pot2})};
-%% 	false ->
-%% 	    Pot1 = pot_ds:bust(Pot),
-%% 	    Events = [{bust,{P,Hitman}}],
-%% 	    {reply, no_chips, 
-%% 	     add_events(Events,State#state{pl_round=R1,
-%% 					   pot=Pot1})}
-%%     end;
-%% handle_call({addon,{P,CurChips}}, _From,
-%% 	    #state{pl_round=R,pot=Pot}=State) ->
-%%     {{Extra,T,AP},Pot2} = pot_ds:addon(CurChips,Pot),
-%%     R2 = pl_round:addon(P,AP,R),
-%%     Reply = {extra_chips,Extra,{new_total,T}},
-%%     Events = [{addon,{P,CurChips,Extra,T,AP}}],
-%%     {reply, Reply, 
-%%      add_events(Events,State#state{pl_round=R2,
-%% 				   pot=Pot2})};
-%% handle_call({chip_up,{NewMin,RoundUp}}, _From,
-%% 	   #state{pl_round=R,pot=Pot}=State) ->
-%%     try pot_ds:set_min_chip(NewMin,RoundUp,Pot) of
-%% 	Pot2 ->
-%% 	    Events = [{chip_up,{NewMin,RoundUp}}],
-%% 	    {reply,ok,
-%% 	     add_events(Events,State#state{pot=Pot2})}
-%%     catch
-%% 	error:incorrect_roundup ->
-%% 	    {reply,incorrect_roundup,State}
-%%     end;
-%% handle_call(end_game,_From,#state{pl_round=R}=State) ->
-%%     try pl_round:end_round(R) of
-%% 	R2 ->
-%% 	    Events = [end_game],
-%% 	    {reply,ok,add_events(Events,State#state{pl_round=R2})}
-%%     catch
-%% 	error:E ->
-%% 	    {reply,E,State}
-%%     end;
-%% handle_call(get_result,_From,#state{pl_round=R,events=Es}=State) ->
-%%     Reply = pl_round:calculate_points(R),
-%%     {reply,Reply ++ [{events,Es}],State};
-%% handle_call(status,_From,#state{pl_round=R,
-%% 				pot=Pot,
-%% 				events=Es}=State) ->
-%%     {reply,{R,Pot,Es},State}.
 
 
-add_event(E,#state{events=Events}=State) ->
+add_event(E,#state{events=Events, recording=false}=State) ->
+    io:format("correct"),
+    State#state{events=Events ++ [E]};
+add_event(E,#state{events=Events, recording=true, filename=Filename}=State) ->
+    save_event(E, Filename),
     State#state{events=Events ++ [E]}.
+
+
+save_event(E, Filename) ->
+    {ok, F} = file:open(Filename, [write, append]),
+    io:format(F, "~p.~n", [E]),
+    file:close(F).
+
 %%--------------------------------------------------------------------
 handle_cast(_Msg, State) ->
     {noreply, State}.
@@ -189,6 +168,14 @@ format_event({bust,{B,H}}) ->
 
 %% (event,#state{}) -> {reply,#state{}}
 -spec execute_event(term(),#state{}) -> {term(),#state{}}.
+execute_event({init,{Players,Multi,Filename}},#state{}=State0) ->
+    R = pl_round:new(Players,Multi),
+    Pot = pot_ds:new(length(Players),1000,5),
+    State1= State0#state{pl_round=R,pot=Pot,
+			 filename=Filename
+			},
+    State = add_event({init,{Players,Multi,Filename}},State1),
+    {init_done, State};
 execute_event({bust,{P,Hitman,Rebuy}}=E, #state{pl_round=R,pot=Pot}=State) ->
     R1 = pl_round:bust(P,Hitman,R),
     case Rebuy of
@@ -239,7 +226,7 @@ execute_event(status,#state{pl_round=R,
 	       
 
 test(1) ->
-    start([a,b,c,d,e,f],[{a,2},{b,1}],1);
+    start([a,b,c,d,e,f],1,"test.log");
 test(2) ->
     bust(a,c,true),
     bust(c,b,true),

@@ -40,19 +40,19 @@ rebuy(#pot{players=P,
 %% This will not be used directly since it gives the addon'ers the
 %% same amount of chips and too many to the ones with few before the
 %% add-on
-%% -spec addons([CurChips::pos_integer()],#pot{}) -> {[{ExtraChips::pos_integer(),AddonPcnt::0..100}],
-%% 						   #pot{}}.
-%% addons(CurChips,#pot{players=P,
-%% 		     chips=C,
-%% 		     min_chip=M}=Pot) ->
-%%     {RebuyChips,_} = rebuy(Pot),
-%%     SumCurrent = lists:sum(CurChips),
-%%     NoAddons = length(CurChips),
-%%     SumAddons = (NoAddons*C - P * SumCurrent) / (P - NoAddons),
-%%     Target = round_chips((SumCurrent + SumAddons) / NoAddons, M),
-%%     Extras = [ {Target - CC, Target, round(100*(Target-CC)/RebuyChips)} || CC <- CurChips],
-%%     SumAddons2 = lists:sum([ Target - CC || CC <- CurChips ]),
-%%     {Extras,Pot#pot{chips=C+SumAddons2}}.
+-spec addons([CurChips::pos_integer()],#pot{}) -> {[{ExtraChips::pos_integer(),AddonPcnt::0..100}],
+						   #pot{}}.
+addons(CurChips,#pot{players=P,
+		     chips=C,
+		     min_chip=M}=Pot) ->
+    {RebuyChips,_} = rebuy(Pot),
+    SumCurrent = lists:sum(CurChips),
+    NoAddons = length(CurChips),
+    SumAddons = (NoAddons*C - P * SumCurrent) / (P - NoAddons),
+    Target = round_chips((SumCurrent + SumAddons) / NoAddons, M),
+    Extras = [ {Target - CC, Target, round(100*(Target-CC)/RebuyChips)} || CC <- CurChips],
+    SumAddons2 = lists:sum([ Target - CC || CC <- CurChips ]),
+    {Extras,Pot#pot{chips=C+SumAddons2}}.
 
 -spec addon(CurrentChips::pos_integer(),#pot{}) ->
     {{ExtraChips::pos_integer(),AddonPercentage::0..100},#pot{}}.
@@ -116,4 +116,21 @@ test(2) ->
     [{R1,P2},{R2,P3},P4,{R3,P5},P6,{Extra,P7}];
 test(3) ->
     Pot = test(0),
-    addon(2000,Pot).
+    addon(2000,Pot);
+test(4) ->
+    Pot = test(0),
+    {R1,P2} = rebuy(Pot),
+    {R2,P3} = rebuy(P2),
+    P4 = set_min_chip(25,10,P3),
+    {R3,P5} = rebuy(P4),
+    P6 = bust(P5),
+    {[{A1,T1,AP1},{A2,T2,AP2}],P7} = addons([300,1500],P6),
+    [{R1,P2},{R2,P3},P4,{R3,P5},P6,{[{A1,T1,AP1},{A2,T2,AP2}],P7}];
+test(5) ->
+Pot = test(0),
+    {R1,P2} = rebuy(Pot),
+    {R2,P3} = rebuy(P2),
+    P4 = set_min_chip(25,10,P3),
+    {R3,P5} = rebuy(P4),
+    P6 = bust(P5).
+

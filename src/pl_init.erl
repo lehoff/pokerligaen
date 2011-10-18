@@ -13,7 +13,6 @@
 -export([start_link/1]).
 
 -export([add_player/1]).
--export([add_bounty/1]).
 -export([set_multiplier/1]).
 -export([start_event/0]).
 -export([close_event/0]).
@@ -26,7 +25,6 @@
 
 -record(state, 
 	{ players=[],
-	  bounties=[],
 	  multiplier=1,
 	  event_name}).
 
@@ -43,10 +41,6 @@ add_player(P) when is_atom(P) ->
 add_player(Ps) when is_list(Ps) ->
     [ gen_server:call(?SERVER,{add_player,P}) || P <- Ps ].
 
-add_bounty(B) when is_tuple(B) ->
-    gen_server:call(?SERVER,{add_bounty,B});
-add_bounty(Bs) when is_list(Bs) ->
-    [ gen_server:call(?SERVER,{add_bounty,B}) || B <- Bs ].
 
 set_multiplier(M) ->
     gen_server:call(?SERVER,{set_multiplier,M}).
@@ -69,21 +63,18 @@ init(EventName) ->
     {ok, #state{event_name=EventName}}.
 
 handle_call(start_event, _From, 
-	    #state{players=Ps,bounties=Bs,multiplier=M}=S) ->
-    pl_night:start(Ps,Bs,M),
+	    #state{players=Ps,multiplier=M,event_name={Year,Month}}=S) ->
+    Filename = io_lib:format("pl_~p~p.log",[Year,Month]), 
+    pl_night:start(Ps,M,Filename),
     {reply, ok, S};
 handle_call(show_config, _From, 
-	    #state{players=Ps,bounties=Bs,multiplier=M}=S) ->
-    Reply = [{players,Ps}, {bounties,Bs}, {multiplier,M}],
+	    #state{players=Ps,multiplier=M}=S) ->
+    Reply = [{players,Ps}, {multiplier,M}],
     {reply, Reply, S};
 handle_call({add_player,P}, _From, #state{players=Ps}=State) ->
     Ps1 = lists:usort([P|Ps]),
     Reply = ok,
     {reply, Reply, State#state{players=Ps1}};
-handle_call({add_bounty,B}, _From, #state{bounties=Bs}=State) ->
-    Bs1 = lists:usort([B|Bs]),
-    Reply = ok,
-    {reply, Reply, State#state{bounties=Bs1}};
 handle_call({set_multiplier,M}, _From, #state{}=State) ->
     {reply, ok, State#state{multiplier=M}};
 handle_call(close_event,_From,#state{event_name=EventName}=State) ->
