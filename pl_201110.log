@@ -1,0 +1,15 @@
+{init,{[benny,lars,peter,rune,shuo,torben],
+       1,
+       [112,108,95,"2011","10",46,108,111,103]}}.
+{bust,{lars,peter,true}}.
+{bust,{rune,peter,true}}.
+{bust,{lars,peter,false}}.
+{addon,{shuo,250}}.
+{addon,{torben,1050}}.
+{addon,{benny,1520}}.
+{addon,{peter,3750}}.
+{bust,{peter,shou,false}}.
+{bust,{torben,rune,false}}.
+{bust,{rune,benny,false}}.
+{bust,{benny,shuo,false}}.
+end_game.

@@ -29,11 +29,11 @@
 
 print_total() ->
     T = pl_scores:calculate(),
-    print_table(["Navn","Bounties","Events","Total","Min"],T).
+    print_table(["Navn","Total","Min"],T).
 
 print_events_scores() ->
     Events = pl_results:all_events(),
-    TPs = pl_scores:collect_total_points(pl_scores:extract_subresults(total_points,Events)),
+    TPs = pl_scores:collect_event_points(pl_scores:extract_subresults(points,Events)),
     io:format("Navn      Scores~n",[]),
     [ io:format("~-10s~p~n",[pretty_name(P),Scores]) || {P,Scores} <- TPs ].
 
