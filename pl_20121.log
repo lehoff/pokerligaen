@@ -1,0 +1,16 @@
+{init,{[benny,jacob,peter,rune,soren,torben],
+       1,
+       [112,108,95,"2012","1",46,108,111,103]}}.
+{bust,{benny,peter,true}}.
+{bust,{torben,soren,true}}.
+{bust,{benny,jacob,false}}.
+{chip_up,{25,10}}.
+{addon,{jacob,1125}}.
+{addon,{rune,1175}}.
+{addon,{peter,1975}}.
+{addon,{soren,3000}}.
+{bust,{torben,peter,false}}.
+{bust,{soren,peter,false}}.
+{bust,{rune,peter,false}}.
+{bust,{jacob,peter,false}}.
+end_game.

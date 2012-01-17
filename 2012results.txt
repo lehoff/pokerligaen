@@ -1,0 +1,58 @@
+
+Samlet stilling per Oktober 2011:
+
+Navn        Total  Min
+Shuo         2051    0
+Peter        1040    0
+Benny         690    0
+Torben        543    0
+Rune          150    0
+Soren           0    0
+Nick            0    0
+Mo              0    0
+Lars            0    0
+Jacob           0    0
+
+Scores fra de enkelte aftener:
+
+Navn      Scores
+Benny     [349,341]
+Jacob     [0]
+Lars      [0,0]
+Mo        [0]
+Nick      [0]
+Peter     [1040,0]
+Rune      [0,150]
+Shuo      [1569,482]
+Soren     [0]
+Torben    [429,114]
+
+
+
+============================================
+Oktober 2011
+--------------------------------------------
+Navn            Multiplier  Basis  Points
+Shuo                 0.83    581     482
+Benny                1.02    334     341
+Rune                 0.76    197     150
+Torben               0.92    124     114
+Peter                1.17      0       0
+Lars                 0.7       0       0
+
+============================================
+September 2011
+--------------------------------------------
+Navn           Multiplier  Basis  Points
+Shuo                 0.91   1724    1569
+Peter                1.05    990    1040
+Torben               0.73    588     429
+Benny                0.95    367     349
+Mo                   0.7       0       0
+Lars                 0.88      0       0
+Jacob                0.76      0       0
+Soren                0.79      0       0
+Nick                 0.85      0       0
+Rune                 0.82      0       0
+
+

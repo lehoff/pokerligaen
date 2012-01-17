@@ -1,0 +1,22 @@
+{init,{[benny,lars,mo,nick,peter,rune,shuo,soren,torben],
+       1.5,
+       [112,108,95,"2011","12",46,108,111,103]}}.
+{bust,{torben,mo,true}}.
+{bust,{lars,peter,true}}.
+{bust,{rune,nick,true}}.
+{bust,{torben,nick,false}}.
+{bust,{rune,shuo,false}}.
+{bust,{peter,shuo,true}}.
+{chip_up,{25,0}}.
+{addon,{mo,1325}}.
+{addon,{benny,1675}}.
+{addon,{shuo,1900}}.
+{addon,{nick,3200}}.
+{addon,{soren,3550}}.
+{bust,{lars,peter,false}}.
+{bust,{benny,peter,false}}.
+{bust,{shuo,nick,false}}.
+{bust,{mo,nick,false}}.
+{bust,{nick,peter,false}}.
+{bust,{soren,peter,false}}.
+end_game.
