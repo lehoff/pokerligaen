@@ -1,33 +1,69 @@
 
-Samlet stilling per Oktober 2011:
+Samlet stilling per februar 2011:
 
 Navn        Total  Min
-Shuo         2051    0
-Peter        1040    0
-Benny         690    0
+Peter        2903    0
+Shuo         2468    0
+Soren        1360    0
+Benny        1309    0
+Nick          606    0
 Torben        543    0
-Rune          150    0
-Soren           0    0
-Nick            0    0
-Mo              0    0
+Mo            473    0
+Rune          312    0
+Jacob         248    0
 Lars            0    0
-Jacob           0    0
 
 Scores fra de enkelte aftener:
 
 Navn      Scores
-Benny     [349,341]
-Jacob     [0]
-Lars      [0,0]
-Mo        [0]
-Nick      [0]
-Peter     [1040,0]
-Rune      [0,150]
-Shuo      [1569,482]
-Soren     [0]
-Torben    [429,114]
+Benny     [349,341,0,0,619]
+Jacob     [0,248]
+Lars      [0,0,0]
+Mo        [0,303,170]
+Nick      [0,606,0]
+Peter     [1040,0,1326,537]
+Rune      [0,150,0,162]
+Shuo      [1569,482,0,417]
+Soren     [0,1106,131,123]
+Torben    [429,114,0,0,0]
 
 
+============================================
+Februar 2012
+--------------------------------------------
+Navn             Multiplier  Basis  Points
+Benny                0.94    659     619
+Shuo                 1.1     379     417
+Mo                   0.76    224     170
+Soren                0.88    140     123
+Torben               0.82      0       0
+Nick                 0.7       0       0
+
+============================================
+Januar 2012
+--------------------------------------------
+Navn             Multiplier  Basis  Points
+Peter                1.07    502     537
+Jacob                0.86    288     248
+Rune                 0.95    171     162
+Soren                1.22    107     131
+Torben               0.76      0       0
+Benny                0.7       0       0
+
+
+============================================
+December 2011 - Xmas Sprint + 50%
+--------------------------------------------
+Navn            Multiplier  Basis  Points
+Peter                0.82   1617    1326
+Soren                1.19    929    1106
+Nick                 1.1     551     606
+Mo                   0.88    344     303
+Shuo                 1.01      0       0
+Benny                0.94      0       0
+Lars                 0.74      0       0
+Rune                 0.78      0       0
+Torben               0.7       0       0
 
 ============================================
 Oktober 2011
