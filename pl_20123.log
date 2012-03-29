@@ -1,0 +1,14 @@
+{init,{[lars,peter,shuo,soren,torben],
+       1,
+       [112,108,95,"2012","3",46,108,111,103]}}.
+{bust,{shuo,soren,true}}.
+{bust,{soren,shuo,true}}.
+{bust,{peter,soren,true}}.
+{chip_up,{25,5}}.
+{addon,{lars,725}}.
+{addon,{torben,2300}}.
+{bust,{torben,lars,false}}.
+{bust,{peter,shuo,false}}.
+{bust,{shuo,lars,false}}.
+{bust,{soren,lars,false}}.
+end_game.
