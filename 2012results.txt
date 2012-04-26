@@ -1,13 +1,13 @@
 
-Samlet stilling per marts 2011:
+Samlet stilling per april 2012:
 
 Navn        Total  Min
-Peter        2992    0
+Peter        3505    0
 Shuo         2584    0
+Benny        1631    0
 Soren        1578    0
-Benny        1309    0
-Nick          606    0
-Torben        543    0
+Nick          811    0
+Torben        632    0
 Mo            473    0
 Lars          467    0
 Rune          312    0
@@ -18,16 +18,28 @@ Scores fra de enkelte aftener
 --------------------------------------------
 
 Navn      Scores
-Benny     [349,341,0,0,619]
+Benny     [349,341,0,0,619,322]
 Jacob     [0,248]
 Lars      [0,0,0,467]
 Mo        [0,303,170]
-Nick      [0,606,0]
-Peter     [1040,0,1326,537,89]
+Nick      [0,606,0,205]
+Peter     [1040,0,1326,537,89,513]
 Rune      [0,150,0,162]
 Shuo      [1569,482,0,417,116]
-Soren     [0,1106,131,123,218]
-Torben    [429,114,0,0,0,0]
+Soren     [0,1106,131,123,218,0]
+Torben    [429,114,0,0,0,0,89]
+
+============================================
+April 2012
+--------------------------------------------
+
+Navn            Multiplier  Basis  Points
+Peter                0.86    597     513
+Benny                0.94    343     322
+Nick                 1.01    203     205
+Torben               0.7     127      89
+Soren                0.78      0       0
+
 
 ============================================
 Marts 2012

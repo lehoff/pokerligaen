@@ -1,0 +1,13 @@
+{init,{[benny,nick,peter,soren,torben],
+       1,
+       [112,108,95,"2012","4",46,108,111,103]}}.
+{bust,{torben,nick,true}}.
+{bust,{soren,nick,true}}.
+{bust,{peter,soren,true}}.
+{bust,{benny,nick,true}}.
+{bust,{soren,benny,false}}.
+{bust,{torben,benny,false}}.
+{bust,{nick,peter,true}}.
+{bust,{nick,peter,false}}.
+{bust,{benny,peter,false}}.
+end_game.
