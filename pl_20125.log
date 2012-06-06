@@ -1,0 +1,14 @@
+{init,{[benny,lars,mo,soren,torben],
+       1.5,
+       [112,108,95,"2012","5",46,108,111,103]}}.
+{bust,{benny,lars,true}}.
+{bust,{lars,torben,true}}.
+{bust,{benny,torben,false}}.
+{bust,{mo,soren,true}}.
+{chip_up,{25,5}}.
+{addon,{soren,2925}}.
+{addon,{torben,4650}}.
+{bust,{lars,torben,false}}.
+{bust,{soren,torben,false}}.
+{bust,{mo,torben,false}}.
+end_game.

@@ -1,33 +1,47 @@
 
-Samlet stilling per april 2012:
+Samlet stilling per maj 2012:
 
 Navn        Total  Min
 Peter        3505    0
 Shuo         2584    0
+Soren        1771    0
 Benny        1631    0
-Soren        1578    0
+Torben       1315    0
 Nick          811    0
-Torben        632    0
-Mo            473    0
-Lars          467    0
+Mo            747    0
+Lars          559    0
 Rune          312    0
 Jacob         248    0
+
 
 ============================================
 Scores fra de enkelte aftener
 --------------------------------------------
 
 Navn      Scores
-Benny     [349,341,0,0,619,322]
+Benny     [349,341,0,0,619,322,0]
 Jacob     [0,248]
-Lars      [0,0,0,467]
-Mo        [0,303,170]
+Lars      [0,0,0,467,92]
+Mo        [0,303,170,274]
 Nick      [0,606,0,205]
 Peter     [1040,0,1326,537,89,513]
 Rune      [0,150,0,162]
 Shuo      [1569,482,0,417,116]
-Soren     [0,1106,131,123,218,0]
-Torben    [429,114,0,0,0,0,89]
+Soren     [0,1106,131,123,218,0,193]
+Torben    [429,114,0,0,0,0,89,683]
+
+============================================
+Maj 2012 - Penultimate Sprint - + 50%
+____________________________________________
+
+Navn		Multiplier  Basis  Points
+Torben               1.23    555     683
+Mo                   0.86    319     274
+Soren                1.02    189     193
+Lars                 0.78    118      92
+Benny                0.7      0       0
+
+
 
 ============================================
 April 2012
